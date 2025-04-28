@@ -1,133 +1,179 @@
-<div align="center">
-<h2><font color="red"> 🕺🕺🕺 Lodge 💃💃💃 </font></center> <br> <center>A Coarse to Fine Diffusion Network for Long Dance Generation Guided by the Characteristic Dance Primitives (CVPR 2024)</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🕺 LodgE README</title>
+</head>
+<body>
+  <div align="center">
+    <h1>🕺 LodgE: Coarse-to-Fine Diffusion for Long Dance Generation</h1>
+    <p><em>A two-stage diffusion network that generates long-form dance sequences from music, guided by characteristic dance primitives. Originally introduced in <strong>Lodge</strong> (CVPR 2024) by Ronghui Li <em>et al.</em></em></p>
+    <p>
+      <a href="https://li-ronghui.github.io/lodge">
+        <img src="https://img.shields.io/badge/Project-Page-Green" alt="Project Page"/>
+      </a>
+      <a href="https://arxiv.org/abs/2403.10518">
+        <img src="https://img.shields.io/badge/ArXiv-2304.01186-red" alt="ArXiv"/>
+      </a>
+    </p>
+  </div>
+  <hr/>
 
-[Ronghui Li](https://li-ronghui.github.io/), [Yuxiang Zhang](https://zhangyux15.github.io/), [Yachao Zhang](https://yachao-zhang.github.io/), [Hongwen Zhang](https://zhanghongwen.cn/), [Jie Guo](https://scholar.google.com/citations?hl=en&user=9QLVTUYAAAAJ), [Yan Zhang](https://yz-cnsdqz.github.io/),  [Yebin Liu](https://www.liuyebin.com/) and [Xiu Li](https://scholar.google.com/citations?user=Xrh1OIUAAAAJ&hl=zh-CN)
+  <h2>📖 Table of Contents</h2>
+  <ol>
+    <li><a href="#project-overview">Project Overview</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#environment-setup">Environment Setup</a></li>
+    <li><a href="#data-preparation">Data Preparation</a></li>
+    <li><a href="#training">Training</a></li>
+    <li><a href="#inference-generation">Inference &amp; Generation</a></li>
+    <li><a href="#rendering-streamlit-app">Rendering &amp; Streamlit App</a></li>
+    <li><a href="#evaluation">Evaluation</a></li>
+    <li><a href="#citation">Citation</a></li>
+    <li><a href="#acknowledgements">Acknowledgements</a></li>
+    <li><a href="#license">License</a></li>
+  </ol>
+  <hr/>
 
-<a href='https://li-ronghui.github.io/lodge'><img src='https://img.shields.io/badge/Project-Page-Green'></a> 
-<a href='https://arxiv.org/abs/2403.10518'><img src='https://img.shields.io/badge/ArXiv-2304.01186-red'></a> 
-</div>
+  <h2 id="project-overview">1. Project Overview</h2>
+  <p><strong>Lodge</strong> presents a coarse-to-fine diffusion framework capable of generating extremely long dance sequences in parallel, given a music input. Our two-stage pipeline consists of:</p>
+  <ul>
+    <li><strong>Local Diffusion</strong>: Models fine-grained, short-term motion primitives.</li>
+    <li><strong>Global Diffusion</strong>: Captures long-term temporal structure and global coherence.</li>
+  </ul>
+  <p>This repo contains code for environment setup, data preprocessing, training, inference, rendering, and a Streamlit demo app for real-time visualization.</p>
+  <hr/>
 
+  <h2 id="features">2. Features</h2>
+  <ul>
+    <li>🎵 Audio-conditioned dance generation</li>
+    <li>⏳ Parallel synthesis of sequences spanning minutes</li>
+    <li>💃 Support for 22 dance genres (via the FineDance dataset)</li>
+    <li>🖥️ Streamlit-based interactive demo</li>
+  </ul>
+  <hr/>
 
+  <h2 id="prerequisites">3. Prerequisites</h2>
+  <ul>
+    <li><strong>CUDA 11+</strong></li>
+    <li><strong>NVIDIA GPU</strong> (A100 recommended for training)</li>
+    <li><strong>Python 3.8+</strong></li>
+    <li><strong>Conda</strong> (for environment management)</li>
+  </ul>
+  <hr/>
 
+  <h2 id="installation">4. Installation</h2>
+  <ol>
+    <li>
+      <p>Clone this forked repo:</p>
+      <pre><code>git clone https://github.com/your-username/lodge.git
+cd lodge</code></pre>
+    </li>
+    <li>
+      <p>(Optional) Create &amp; activate your Conda env:</p>
+      <pre><code>conda env create -f lodge.yml
+conda activate lodge</code></pre>
+    </li>
+  </ol>
+  <hr/>
 
+  <h2 id="environment-setup">5. Environment Setup</h2>
+  <p>Matches the official EDGE setup. Install dependencies:</p>
+  <pre><code>conda env create -f lodge.yml
+conda activate lodge</code></pre>
+  <p>This installs:</p>
+  <ul>
+    <li><code>pytorch-lightning==1.9.5</code></li>
+    <li>Audio, vision, and data-processing packages</li>
+  </ul>
+  <hr/>
 
-## 💃💃💃 Abstract
-<b>TL;DR: We propose a two-stage diffusion model that can generate extremely long dance from given music in a parallel manner.</b>
+  <h2 id="data-preparation">6. Data Preparation</h2>
+  <p>The <a href="https://github.com/li-ronghui/FineDance">FineDance</a> dataset averages 152.3 s per clip over 22 genres; we use only the 22 body joints for Lodge.</p>
+  <ol>
+    <li>
+      <p>Download raw FineDance from <a href="https://drive.google.com/file/d/1zQvWG9I0H4U3Zrm8d_QD_ehenZvqfQfS/view">Google Drive</a> or <a href="https://pan.baidu.com/s/1gynUC7pMdpsE31wAwq177w?pwd=o9pw">百度云</a> and place in <code>./data</code>.</p>
+    </li>
+    <li>
+      <p>Preprocess:</p>
+      <pre><code>python data/code/preprocess.py
+python data/code/pre/FineDance_normalizer.py</code></pre>
+    </li>
+    <li>
+      <p><strong>Optional:</strong> Use our preprocessed features. Place under <code>./data/finedance/</code>:</p>
+      <pre><code>lodge/data/finedance
+├── label_json/
+├── motion/     # .npy files
+├── music_npy/
+├── music_wav/
+├── Normalizer.pth
+└── smplx_neu_J_1.npy</code></pre>
+    </li>
+  </ol>
+  <hr/>
 
-<details><summary>CLICK for full abstract</summary>
+  <h2 id="training">7. Training</h2>
+  <p>Train modules sequentially:</p>
+  <pre><code>python train.py --cfg configs/lodge/finedance_fea139.yaml --cfg_assets configs/data/assets.yaml
+python train.py --cfg configs/lodge/coarse_finedance_fea139.yaml --cfg_assets configs/data/assets.yaml</code></pre>
+  <p>Fine-tune Local:</p>
+  <pre><code>python train.py --cfg configs/lodge/finedance_fea139_finetune_v2.yaml --cfg_assets configs/data/assets.yaml</code></pre>
+  <p>Pretrained checkpoints on Google Drive / 百度云.</p>
+  <hr/>
 
-> We propose Lodge, a network capable of generating extremely long dance sequences conditioned on given music. We design Lodge as a two-stage coarse to fine diffusion architecture, and propose the characteristic dance primitives that possess significant expressiveness as intermediate representations between two diffusion models. The first stage is global diffusion, which focuses on comprehending the coarse-level music-dance correlation and production characteristic dance primitives. In contrast, the second-stage is the local diffusion, which parallelly generates detailed motion sequences under the guidance of the dance primitives and choreographic rules. In addition, we propose a Foot Refine Block to optimize the contact between the feet and the ground, enhancing the physical realism of the motion. Our approach can parallelly generate dance sequences of extremely long length, striking a balance between global choreographic patterns and local motion quality and expressiveness. Extensive experiments validate the efficacy of our method.
-</details>
+  <h2 id="inference-generation">8. Inference &amp; Generation</h2>
+  <p>Generate dance sequences (soft ∈ [0,1]):</p>
+  <pre><code>python infer_lodge.py \\
+  --cfg exp/Local_Module/FineDance_FineTuneV2_Local/local_train.yaml \\
+  --cfg_assets configs/data/assets.yaml \\
+  --soft 1.0</code></pre>
+  <hr/>
 
+  <h2 id="rendering-streamlit-app">9. Rendering &amp; Streamlit App</h2>
+  <h3>Rendering</h3>
+  <p>Switched from <code>ffmpeg</code> to <strong>MoviePy</strong> due to GPU constraints:</p>
+  <pre><code>python render.py --modir path/to/output/motion_dir</code></pre>
 
-## 🎤🎤🎤 Todo
+  <h3>Streamlit App</h3>
+  <p>Use local or university RTX 3090 (Colab GPU insufficient). No DigitalOcean—host via Streamlit:</p>
+  <pre><code>streamlit run app.py</code></pre>
+  <p>Upload motion + audio in the UI to get a final synced video.</p>
+  <hr/>
 
-- [X] Release the code and config for teaser
-- [X] Release the checkpoints
-- [X] Release detailed guidance for traing and testing
-- [ ] Release more applications
+  <h2 id="evaluation">10. Evaluation</h2>
+  <pre><code>python metric/metrics_finedance.py    # diversity &amp; fidelity
+python metric/beat_align_score.py       # beat alignment
+python metric/foot_skating.py           # foot contact quality</code></pre>
+  <hr/>
 
-
-## 🍻🍻🍻 Setup Environment
-Our method is trained using cuda11, pytorch-lightning 1.9.5 on Nvidia A100.
-``` 
-conda env create -f lodge.yml
-``` 
-Our environment is similar to EDGE [official](https://edge-dance.github.io/). You may check them for more details.
-
-## 🔢🔢🔢 Data preparation
-
-The [FineDance](https://github.com/li-ronghui/FineDance) dataset lasts an average of 152.3 seconds per dance and has a wealth of 22 dance genres, making it ideal for training dance generation, especially long dance generation. Therefore, we mainly use FineDance to conduct experiments. Please visit [Google Driver](https://drive.google.com/file/d/1zQvWG9I0H4U3Zrm8d_QD_ehenZvqfQfS/view) or [百度云](https://pan.baidu.com/s/1gynUC7pMdpsE31wAwq177w?pwd=o9pw) to download the origin FineDance dataset and put it in the ./data floder. Please notice that the origin FineDance motion has 52 joints (including 22 body joints and 30 hand joints), we only use the body part dance to train and test Lodge. Therefore, you need to run the following script to preprocess the dataset.
-
-```bash
-python data/code/preprocess.py
-python dld/data/pre/FineDance_normalizer.py
-```
-
-Otherwise, directly download our preprocessed music and dance features from [Google Driver](https://drive.google.com/drive/folders/1cdj8YymfN1BHgggVfGaLjaa9vaEpjPzZ?usp=sharing) or [百度云](https://pan.baidu.com/s/1PQ53ooKxp-EkQvhiv7SKcA?pwd=y0ly) and put them into the ./data/finedance folder if you don't wish to process the data.
-
-The final file structure is as follows:
-
-```bash
-LODGE
-├── data
-│   ├── code
-│   │   ├──preprocess.py
-│   │   ├──extract_musicfea35.py
-│   ├── finedance
-│   │   ├──label_json
-│   │   ├──motion
-│   │   ├──music_npy
-│   │   ├──music_wav
-│   │   ├──music_npynew
-│   │   ├──mofea319
-│   │── Normalizer.pth
-└   └── smplx_neu_J_1.npy
-```
-
-
-
-
-
-## 💃💃💃 Training
-
-Traing the Local Diffusion and Global Diffusion
-```bash
-python train.py --cfg configs/lodge/finedance_fea139.yaml --cfg_assets configs/data/assets.yaml 
-python train.py --cfg configs/lodge/coarse_finedance_fea139.yaml --cfg_assets configs/data/assets.yaml
-```
-
-Set the pretrained Local Diffusion checkpoint path at the "TRAIN.PRETRAINED" of "configs/lodge/finedance_fea139_finetune_v2.yaml", then finetuning the Local Diffusion for smooth generation.
-```bash
-python train.py --cfg configs/lodge/finedance_fea139_finetune_v2.yaml --cfg_assets configs/data/assets.yaml
-```
-
-You can also download the pretrained model from [Google Driver](https://drive.google.com/file/d/13Yp__EPAw0EjrSS898X5FtSQGmveBykA/view?usp=sharing) or [百度云](https://pan.baidu.com/s/1twYAdqR5OjSPkIlT1AJafw?pwd=1mte).
-
-## 🕺🕺🕺 Inference
-Once the training is done, run inference:
-The --soft is a float parameter range from 0 to 1, which can set the number of steps for the soft cue guidance action. 
-```bash
-python infer_lodge.py --cfg exp/Local_Module/FineDance_FineTuneV2_Local/local_train.yaml --cfg_assets configs/data/assets.yaml --soft 1.0
-```
-
-## 🖥️🖥️🖥️ Rendering
-```bash
-python render.py --modir 'your motion dir'
-```
-
-## 🔎🔎🔎 Evaluate
-Once the inference is done, run evaluate:
-
-```bash
-python metric/metrics_finedance.py
-python metric/beat_align_score.py
-python metric/foot_skating.py
-```
-
-
-
-
-## 🎼🎼🎼 Citation 
-If you think this project is helpful, please leave a star⭐️⭐️⭐️ and cite our paper:
-```bibtex
-@inproceedings{li2024lodge,
+  <h2 id="citation">11. Citation</h2>
+  <p>If you find this helpful, please ⭐️ and cite:</p>
+  <pre><code>@inproceedings{li2024lodge,
   title={Lodge: A coarse to fine diffusion network for long dance generation guided by the characteristic dance primitives},
-  author={Li, Ronghui and Zhang, YuXiang and Zhang, Yachao and Zhang, Hongwen and Guo, Jie and Zhang, Yan and Liu, Yebin and Li, Xiu},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  pages={1524--1534},
+  author={Li, Ronghui and … and Li, Xiu},
+  booktitle={CVPR},
+  pages={1524–1534},
   year={2024}
 }
+
 @inproceedings{li2023finedance,
-  title={Finedance: A fine-grained choreography dataset for 3d full body dance generation},
-  author={Li, Ronghui and Zhao, Junfan and Zhang, Yachao and Su, Mingyang and Ren, Zeping and Zhang, Han and Tang, Yansong and Li, Xiu},
-  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
-  pages={10234--10243},
+  title={FineDance: A fine-grained choreography dataset for 3d full body dance generation},
+  author={Li, Ronghui and … and Li, Xiu},
+  booktitle={ICCV},
+  pages={10234–10243},
   year={2023}
 }
-``` 
+</code></pre>
+  <hr/>
 
+  <h2 id="acknowledgements">12. Acknowledgements</h2>
+  <p>Inspired by <a href="https://github.com/Stanford-TML/EDGE">EDGE</a>, eval scripts from <a href="https://github.com/lisiyao21/Bailando">Bailando</a>, and README style from <strong>follow-your-pose</strong>. Thanks to all authors!</p>
+  <hr/>
 
-## 👯👯👯 Acknowledgements
-
-This basic dance diffusion borrows from [EDGE](https://github.com/Stanford-TML/EDGE), the evaluate code borrows from  [Bailando](https://github.com/lisiyao21/Bailando), the README.md style borrows from [follow-your-pose](https://github.com/mayuelala/FollowYourPose). Thanks the authors for sharing their code and models.
+  <h2 id="license">13. License</h2>
+  <p>Released under the MIT License. See <a href="LICENSE">LICENSE</a> for details.</p>
+</body>
+</html>
