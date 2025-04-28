@@ -28,7 +28,6 @@
     <li><a href="#installation">Installation</a></li>
     <li><a href="#environment-setup">Environment Setup</a></li>
     <li><a href="#data-preparation">Data Preparation</a></li>
-    <li><a href="#training">Training</a></li>
     <li><a href="#inference-generation">Inference &amp; Generation</a></li>
     <li><a href="#rendering-streamlit-app">Rendering &amp; Streamlit App</a></li>
     <li><a href="#evaluation">Evaluation</a></li>
@@ -115,16 +114,7 @@ python data/code/pre/FineDance_normalizer.py</code></pre>
   </ol>
   <hr/>
 
-  <h2 id="training">7. Training</h2>
-  <p>Train modules sequentially:</p>
-  <pre><code>python train.py --cfg configs/lodge/finedance_fea139.yaml --cfg_assets configs/data/assets.yaml
-python train.py --cfg configs/lodge/coarse_finedance_fea139.yaml --cfg_assets configs/data/assets.yaml</code></pre>
-  <p>Fine-tune Local:</p>
-  <pre><code>python train.py --cfg configs/lodge/finedance_fea139_finetune_v2.yaml --cfg_assets configs/data/assets.yaml</code></pre>
-  <p>Pretrained checkpoints on Google Drive / 百度云.</p>
-  <hr/>
-
-  <h2 id="inference-generation">8. Inference &amp; Generation</h2>
+  <h2 id="inference-generation">7. Inference &amp; Generation</h2>
   <p>Generate dance sequences (soft ∈ [0,1]):</p>
   <pre><code>python infer_lodge.py \\
   --cfg exp/Local_Module/FineDance_FineTuneV2_Local/local_train.yaml \\
@@ -132,9 +122,9 @@ python train.py --cfg configs/lodge/coarse_finedance_fea139.yaml --cfg_assets co
   --soft 1.0</code></pre>
   <hr/>
 
-  <h2 id="rendering-streamlit-app">9. Rendering &amp; Streamlit App</h2>
+  <h2 id="rendering-streamlit-app">8. Rendering &amp; Streamlit App</h2>
   <h3>Rendering</h3>
-  <p>Switched from <code>ffmpeg</code> to <strong>MoviePy</strong> due to GPU constraints:</p>
+  <p>Switched from <code>ffmpeg</code> to <strong>MoviePy</strong> due to rendering problems:</p>
   <pre><code>python render.py --modir path/to/output/motion_dir</code></pre>
 
   <h3>Streamlit App</h3>
@@ -143,13 +133,13 @@ python train.py --cfg configs/lodge/coarse_finedance_fea139.yaml --cfg_assets co
   <p>Upload motion + audio in the UI to get a final synced video.</p>
   <hr/>
 
-  <h2 id="evaluation">10. Evaluation</h2>
+  <h2 id="evaluation">9. Evaluation</h2>
   <pre><code>python metric/metrics_finedance.py    # diversity &amp; fidelity
 python metric/beat_align_score.py       # beat alignment
 python metric/foot_skating.py           # foot contact quality</code></pre>
   <hr/>
 
-  <h2 id="citation">11. Citation</h2>
+  <h2 id="citation">10. Citation</h2>
   <p>If you find this helpful, please ⭐️ and cite:</p>
   <pre><code>@inproceedings{li2024lodge,
   title={Lodge: A coarse to fine diffusion network for long dance generation guided by the characteristic dance primitives},
@@ -169,11 +159,11 @@ python metric/foot_skating.py           # foot contact quality</code></pre>
 </code></pre>
   <hr/>
 
-  <h2 id="acknowledgements">12. Acknowledgements</h2>
+  <h2 id="acknowledgements">11. Acknowledgements</h2>
   <p>Inspired by <a href="https://github.com/Stanford-TML/EDGE">EDGE</a>, eval scripts from <a href="https://github.com/lisiyao21/Bailando">Bailando</a>, and README style from <strong>follow-your-pose</strong>. Thanks to all authors!</p>
   <hr/>
 
-  <h2 id="license">13. License</h2>
+  <h2 id="license">12. License</h2>
   <p>Released under the MIT License. See <a href="LICENSE">LICENSE</a> for details.</p>
 </body>
 </html>
